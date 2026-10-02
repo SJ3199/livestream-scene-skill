@@ -1,0 +1,26 @@
+[
+  {
+    "file": "fashion.jpg",
+    "title": "秋季服装零售",
+    "source_sha256": "f8d66273d960bf7329f9c521ea7770ce2e28ecb7bfc4239af2f2743afe00a052",
+    "type": "历史AI生成展示副本，非学习参考图",
+    "generation_version": "v1.2.0之前",
+    "metadata_removed": true
+  },
+  {
+    "file": "handbag.jpg",
+    "title": "柔软旅行主题",
+    "source_sha256": "a7e3c94df4bd52bb81112e13d4a714ca218b584e3928ecd0a3c37be0f8f55845",
+    "type": "历史AI生成展示副本，非学习参考图",
+    "generation_version": "v1.2.0之前",
+    "metadata_removed": true
+  },
+  {
+    "file": "crab.jpg",
+    "title": "秋季湖畔收获",
+    "source_sha256": "305c174da0ad4393ed46266e8f178e1eb8710f83f6cbb3757cbdb16fb586fb69",
+    "type": "历史AI生成展示副本，非学习参考图",
+    "generation_version": "v1.2.0之前",
+    "metadata_removed": true
+  }
+]

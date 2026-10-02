@@ -1,0 +1,7 @@
+__pycache__/
+*.pyc
+.venv/
+直播场景项目/
+project-settings.json
+dist/
+.DS_Store

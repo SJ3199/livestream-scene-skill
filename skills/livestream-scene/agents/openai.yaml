@@ -1,0 +1,4 @@
+interface:
+  display_name: "直播场景设计"
+  short_description: "从对话素材规划专业直播造景，自动两轮生图、站位自检与文件交付"
+  default_prompt: "使用 $livestream-scene 初始化项目，告诉我需要提供哪些素材。"
