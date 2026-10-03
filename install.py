@@ -54,6 +54,7 @@ if __name__ == "__main__":
     p.add_argument("--skills-dir", default=str(default_skills_dir()))
     p.add_argument("--upgrade", action="store_true", help="先备份已安装技能，再更新本包文件")
     a = p.parse_args()
+    print("使用前提：本项目以ChatGPT为首选并围绕其生图能力优化；必须使用具备生图能力的对话型AI。安装本包不会获得生图服务或权限，宿主还需支持本地技能、看图与文件读写。")
     try:
         target, job = install(a.skills_dir, a.project_root, a.upgrade)
     except (OSError, ValueError, KeyError, ImportError) as e:
