@@ -24,7 +24,7 @@ def location_links(path):
         value = target.as_posix().replace("<", "%3C").replace(">", "%3E")
         return f"[{label}](<{value}>)"
     return {"folder": link("打开结果文件夹", path),
-            "image": link("下载第二版", path / "第二版.png"),
+            "image": link("下载第二版", next(iter(sorted(path.glob("[0-9][0-9]_第二版*.png"), reverse=True)), path / "第二版.png")),
             "record": link("查看提示词与检查记录", path / "记录.md")}
 
 def open_output(root, job, run):
@@ -155,8 +155,13 @@ def save(root, job, run, round_no, source, width=1080, height=1920, replace=Fals
     prompt = work / f"prompt-{round_no}.txt"
     if not prompt.exists() or not prompt.read_text(encoding="utf-8").strip():
         raise ValueError("缺少完整提示词")
-    target = out / ("第一版.png" if round_no == 1 else "第二版.png")
-    if target.exists() and not replace:
+    previous = state["rounds"].get(str(round_no))
+    if previous and not replace:
+        raise FileExistsError(previous["output"])
+    sequence = max([int(p.name.split("_", 1)[0]) for p in out.glob("[0-9][0-9]_*.png")] + [len(state["rounds"])]) + 1
+    label = "第一版" if round_no == 1 else ("第二版修正" if replace else "第二版")
+    target = out / f"{sequence:02d}_{label}.png"
+    if target.exists():
         raise FileExistsError(target)
     if replace and round_no != 2:
         raise ValueError("仅第二轮质量修正可显式替换")
@@ -182,6 +187,9 @@ def save(root, job, run, round_no, source, width=1080, height=1920, replace=Fals
     state["rounds"][str(round_no)] = {"source": str(original), "source_size": list(size),
                                      "output": str(target), "output_size": [width, height],
                                      "normalization": "Lanczos resize without crop"}
+    snapshot = out / f"{sequence:02d}_提示词.txt"
+    shutil.copyfile(prompt, snapshot)
+    state.setdefault("history", []).append(dict(state["rounds"][str(round_no)], sequence=sequence, round=round_no, prompt=str(snapshot)))
     atomic_json(work / "state.json", state)
     return state
 
@@ -201,7 +209,7 @@ def finish(root, job, run):
             if list(im.size) != data["output_size"]:
                 raise ValueError("实际交付尺寸与记录不同")
     report = out / "记录.md"
-    content = "\n\n".join(texts) + "\n\n## 尺寸记录\n\n" + json.dumps(state["rounds"], ensure_ascii=False, indent=2)
+    content = "\n\n".join(texts) + "\n\n## 尺寸记录\n\n" + json.dumps({"rounds": state["rounds"], "history": state.get("history", [])}, ensure_ascii=False, indent=2)
     if not report.exists():
         with report.open("x", encoding="utf-8") as f:
             f.write(content)

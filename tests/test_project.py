@@ -62,7 +62,10 @@ class ProjectTest(unittest.TestCase):
         m.save(self.root, 1, 1, 1, src)
         m.save(self.root, 1, 1, 2, src)
         m.save(self.root, 1, 1, 2, src, replace=True)
-        self.assertEqual(len(list(Path(info["output"]).glob("*.png"))), 2)
+        self.assertEqual(len(list(Path(info["output"]).glob("*.png"))), 3)
+        self.assertTrue((Path(info["output"]) / "02_第二版.png").exists())
+        self.assertEqual(len(m.status(self.root, 1, 1)["history"]), 3)
+        self.assertIn("03_第二版修正.png", m.location_links(Path(info["output"]))["image"])
         self.assertEqual(len(list(Path(info["work"]).glob("round-2-source*.png"))), 2)
     def test_invalid_job_and_legacy(self):
         with self.assertRaises(ValueError):
@@ -104,7 +107,7 @@ class ProjectTest(unittest.TestCase):
         m.save(self.root, 1, 1, 1, src)
         m.save(self.root, 1, 1, 2, src)
         result = m.finish(self.root, 1, 1)
-        for key, name in (("folder", None), ("image", "第二版.png"), ("record", "记录.md")):
+        for key, name in (("folder", None), ("image", "02_第二版.png"), ("record", "记录.md")):
             target = Path(result["output"]) / name if name else Path(result["output"])
             self.assertTrue(target.exists())
             self.assertIn(target.as_posix(), result["links"][key])

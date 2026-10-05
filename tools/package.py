@@ -5,7 +5,7 @@ import re
 import zipfile
 from pathlib import Path
 
-def build(version="1.3.0", destination=None):
+def build(version="1.4.0", destination=None):
     if not re.fullmatch(r"\d+\.\d+\.\d+", version):
         raise ValueError("version must be MAJOR.MINOR.PATCH")
     root = Path(__file__).resolve().parents[1]
@@ -31,7 +31,7 @@ def build(version="1.3.0", destination=None):
     return result
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("--version", default="1.3.0")
+    parser.add_argument("--version", default="1.4.0")
     parser.add_argument("--output-dir")
     args = parser.parse_args()
     build(args.version, args.output_dir)
