@@ -76,7 +76,8 @@ class ProjectTest(unittest.TestCase):
         skills = Path(self.tmp.name) / "skills"
         target, job = installer.install(skills, self.root)
         self.assertTrue((target / "SKILL.md").exists())
-        self.assertTrue((job / "参考").is_dir())
+        self.assertEqual(job, self.root.resolve())
+        self.assertEqual(list(job.iterdir()), [])
         with self.assertRaises(FileExistsError):
             installer.install(skills, self.root)
     def test_attachment_archive_deduplicates_and_records_chat(self):
@@ -93,6 +94,7 @@ class ProjectTest(unittest.TestCase):
         skills = Path(self.tmp.name) / "skills"
         target, job = installer.install(skills, self.root)
         (target / "SKILL.md").write_text("旧版用户内容", encoding="utf-8")
+        (job / "参考").mkdir()
         (job / "参考/保留.txt").write_text("不可丢失", encoding="utf-8")
         installer.install(skills, upgrade=True)
         backups = list((skills.parent / "skill-backups").glob("livestream-scene-*"))

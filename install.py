@@ -33,10 +33,8 @@ def install(skills_dir, project_root=None, upgrade=False):
     project_root = Path(project_root or Path.home() / "Documents" / "直播场景项目").expanduser().resolve()
     if project_root == target or target in project_root.parents:
         raise ValueError("项目目录不能位于技能安装目录内")
-    spec = importlib.util.spec_from_file_location("scene_project", source / "scripts" / "project.py")
-    module = importlib.util.module_from_spec(spec)
-    spec.loader.exec_module(module)
-    job = module.init_job(project_root)
+    project_root.mkdir(parents=True, exist_ok=True)
+    job = project_root
     target.parent.mkdir(parents=True, exist_ok=True)
     ignore = shutil.ignore_patterns("__pycache__", "*.pyc", "project-settings.json")
     if target.exists():
@@ -59,7 +57,7 @@ if __name__ == "__main__":
         target, job = install(a.skills_dir, a.project_root, a.upgrade)
     except (OSError, ValueError, KeyError, ImportError) as e:
         p.exit(1, f"安装未完成：{e}\n需要Python 3.10+和Pillow；请先运行 python -m pip install -r requirements.txt\n")
-    print(f"安装成功：{target}\n结果保存在：{job.parent}/<编号>/结果/run-<运行编号>/")
-    print(f"[打开项目文件夹](<{job.parent.as_posix()}>)")
+    print(f"安装成功：{target}\n结果保存在：{job}/本批次日期_主题/全部场景版本/")
+    print(f"[打开项目文件夹](<{job.as_posix()}>)")
     print("下一轮对话调用 $livestream-scene；若未发现技能，重启宿主。")
-    print("直接在对话中发送参考图和品类/品牌/产品图；logo与特殊要求可选。素材与结果由技能管理，完成后会给出可点击的结果文件夹、图片和记录链接。")
+    print("直接在对话中发送参考图和品类/品牌/产品图；logo与特殊要求可选。素材与结果由技能管理，完成后会给出可点击的结果文件夹、图片及同名中文提示词链接。")
