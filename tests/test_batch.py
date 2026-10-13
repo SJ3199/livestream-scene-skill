@@ -31,7 +31,9 @@ class BatchTest(unittest.TestCase):
             self.assertEqual(result['images'], ['01 (1).png', '01 (2).png'])
             self.assertEqual(p.read_bytes(), before)
             self.assertEqual(list(root.iterdir()), [root / '本批次测试'])
-            self.assertEqual(list((root / '本批次测试').iterdir()), [p.parent])
+            batch_entries = list((root / '本批次测试').iterdir())
+            self.assertEqual(len(batch_entries), 1)
+            self.assertTrue(batch_entries[0].samefile(p.parent))
             self.assertEqual(len(list(p.parent.iterdir())), 4)
             with Image.open(p) as image:
                 self.assertEqual(image.size, (1080, 1920))
